@@ -1,7 +1,9 @@
 packages:
-  # 可执行文件
+  # 客户端
   - "apps/*"
   # 组件库
   - "packages/*"
   # 工具函数
   - "utils/*"
+  # 服务
+  - "services/*"

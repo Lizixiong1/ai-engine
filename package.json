@@ -4,8 +4,7 @@
   "description": "Monorepo for AI Engine project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpm --filter @ai-engine/web-app dev"
+    "ai-visual:dev": "pnpm --filter @ai-engine/apps-ai-visual dev"
   },
   "keywords": [],
   "author": "",

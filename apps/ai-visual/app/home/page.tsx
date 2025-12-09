@@ -1,9 +1,7 @@
-import Image from "next/image";
+import React from "react";
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      两条臭区：（lhf + jjj）
-    </div>
-  );
-}
+const Home = () => {
+  return <div>index</div>;
+};
+
+export default Home;
