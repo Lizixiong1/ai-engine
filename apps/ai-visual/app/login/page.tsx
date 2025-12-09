@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useI18n } from '../../lib/i18n/context';
-import { Mail, Lock } from 'lucide-react';
+import { useState } from "react";
+import Link from "next/link";
+import { useI18n } from "../../lib/i18n/context";
+import { Mail, Lock } from "lucide-react";
 
 export default function LoginPage() {
   const { t } = useI18n();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: 实现登录逻辑
-    console.log('登录:', formData);
+    console.log("登录:", formData);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +33,7 @@ export default function LoginPage() {
             {t.login.title}
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-            {t.login.noAccount}{' '}
+            {t.login.noAccount}{" "}
             <Link
               href="/register"
               className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400"
@@ -85,20 +85,7 @@ export default function LoginPage() {
           </div>
 
           <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
-              />
-              <label
-                htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-900 dark:text-gray-300"
-              >
-                {t.login.rememberMe}
-              </label>
-            </div>
+            <div className="flex items-center"></div>
 
             <div className="text-sm">
               <a

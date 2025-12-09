@@ -35,3 +35,4 @@ export const translations: Record<Locale, Translations> = {
   "zh-cn": zhCN,
   "en-us": enUS,
 };
+

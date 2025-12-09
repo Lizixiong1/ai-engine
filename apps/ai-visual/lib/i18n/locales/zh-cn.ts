@@ -90,3 +90,4 @@ export const zhCN = {
     menu: '菜单',
   },
 } as const;
+

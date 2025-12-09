@@ -134,7 +134,7 @@ export default function RegisterPage() {
               name="agree-terms"
               type="checkbox"
               required
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
+              className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600 accent-blue-500"
             />
             <label
               htmlFor="agree-terms"
