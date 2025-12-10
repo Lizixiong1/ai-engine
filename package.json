@@ -4,7 +4,9 @@
   "description": "Monorepo for AI Engine project",
   "main": "index.js",
   "scripts": {
-    "ai-visual:dev": "pnpm --filter @ai-engine/apps-ai-visual dev"
+    "ai-visual:dev": "pnpm --filter @ai-engine/apps-ai-visual dev",
+    "admin-api:dev": "pnpm --filter @ai-engine/services-admin-api start:dev",
+    "admin-api:init-db": "pnpm --filter @ai-engine/services-admin-api db:init"
   },
   "keywords": [],
   "author": "",

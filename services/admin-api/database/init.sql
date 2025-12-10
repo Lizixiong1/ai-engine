@@ -12,7 +12,9 @@ CREATE TABLE IF NOT EXISTS users (
     updated_time TIMESTAMP DEFAULT NULL
 );
 
+ALTER TABLE users ADD COLUMN email VARCHAR(50) NOT NULL;
+
 -- 初始化用户表数据
-INSERT INTO users (username, password)
-VALUES('admin', '123456');
+INSERT INTO users (username, password, email)
+VALUES('admin', '123456','a@qq.com');
 
