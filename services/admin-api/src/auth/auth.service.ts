@@ -33,7 +33,7 @@ export class AuthService {
     }
   }
 
-  async register(dto: RegisterDto): Promise<Omit<User, 'password'>> {
+  async register(dto: RegisterDto) {
     const { username, password } = dto;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const existed = (await this.userService.findByUsername(
@@ -54,7 +54,13 @@ export class AuthService {
 
     const { password: passwordToOmit, ...result } = user;
     void passwordToOmit;
-
+    const payload: JwtPayload = { sub: user.id, username: user.username };
+    return {
+      access_token: this.jwtService.sign(payload, {
+        secret: jwtConstants.secret,
+      }),
+      user: result,
+    };
     return result;
   }
 

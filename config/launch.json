@@ -1,0 +1,30 @@
+{
+  // 使用 IntelliSense 了解相关属性。
+  // 悬停以查看现有属性的描述。
+  // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "ai-visual",
+      "cwd": "${workspaceFolder}\\ai-engine\\apps\\ai-visual",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "admin-api",
+      "cwd": "${workspaceFolder}\\ai-engine\\services\\admin-api",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:dev"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  ]
+}
