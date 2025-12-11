@@ -2,16 +2,32 @@ import { ApiProperty } from '@nestjs/swagger';
 
 class CreateDto {
   @ApiProperty({
-    description: '姓名',
+    description: '用户名',
     default: '',
   })
-  name: string;
+  username: string;
 
   @ApiProperty({
-    description: '年龄',
-    default: 0,
+    description: '密码',
+    default: '',
   })
-  age: number;
+  password: string;
+
+  @ApiProperty({
+    description: 'email',
+    default: '',
+  })
+  email?: string;
+
+  @ApiProperty({
+    description: '创建时间',
+  })
+  createTime: Date;
+
+  @ApiProperty({
+    description: '更新时间',
+  })
+  updateTime: Date;
 }
 
 export default CreateDto;

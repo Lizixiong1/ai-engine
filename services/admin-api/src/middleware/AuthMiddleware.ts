@@ -10,7 +10,7 @@ export class AuthMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
     const token = req.headers[AUTH_KEY];
 
-    if (!token || !token.startsWidth('Bearer ')) {
+    if (!token || !token?.startsWith('Bearer')) {
       throw new UnauthorizedException('未发现认证信息');
     }
 

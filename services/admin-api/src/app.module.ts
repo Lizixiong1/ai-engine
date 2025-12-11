@@ -1,11 +1,10 @@
 import * as common from '@nestjs/common';
+import { RequestMethod } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { LoggerMiddleware } from './middleware/LoggerMiddleware';
-import { AuthService } from './auth/auth.service';
 import { AuthMiddleware } from './middleware/AuthMiddleware';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from './users/users.entity';
 
 @common.Module({
@@ -20,10 +19,10 @@ import { User } from './users/users.entity';
       entities: [User], // 实体
       synchronize: true, // 自动同步数据库（开发用）
     }),
-    AuthModule,
     UsersModule,
+    AuthModule,
   ],
-  providers: [AuthService, Repository],
+  providers: [AuthMiddleware],
 })
 export class AppModule {
   // constructor(consumer: common.MiddlewareConsumer) {
@@ -31,6 +30,12 @@ export class AppModule {
   // }
   configure(consumer: common.MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
-    consumer.apply(AuthMiddleware).exclude('auth/register', 'auth/login');
+    consumer
+      .apply(AuthMiddleware)
+      .exclude(
+        { path: '/auth/register', method: RequestMethod.POST },
+        { path: '/auth/login', method: RequestMethod.ALL },
+      )
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

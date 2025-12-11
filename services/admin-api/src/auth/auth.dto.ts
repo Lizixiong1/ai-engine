@@ -10,3 +10,7 @@ export class RegisterDto {
   @ApiProperty({ example: '@12.com', required: false, description: '邮箱' })
   email?: string;
 }
+export interface LoginParams {
+  username: string;
+   password: string;
+}

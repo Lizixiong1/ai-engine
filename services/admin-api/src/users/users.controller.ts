@@ -7,29 +7,32 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './users.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { AUTH_KEY } from 'src/common/constant';
 import { ApiAuth } from 'src/decorator/auth.decorator';
 import { User } from './users.entity';
+import CreateDto from './users.dto';
 @ApiAuth()
 @Controller('user')
 export class UsersController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() user: Partial<User>) {
+  create(@Body() user: CreateDto) {
     return this.userService.create(user);
   }
 
   @Get()
   findAll() {
-    return this.userService.findAll();
+    let users = this.userService.findAll();
+    return users;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string){
+  findOne(@Param('id') id: string) {
     return this.userService.findOne(Number(id));
   }
 

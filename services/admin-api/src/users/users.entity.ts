@@ -1,19 +1,22 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  name: string;
+  @Column({ name: 'username', type: 'varchar' })
+  username: string;
 
-  @Column()
-  email: string;
+  @Column({ name: 'password', type: 'varchar' })
+  password: string;
 
-  @Column()
-  createTime: string;
+  @Column({ name: 'email', type: 'varchar', nullable: true })
+  email: string | null;
 
-  @Column()
-  updateTime: string;
+  @Column({ name: 'create_time', type: 'timestamp' })
+  createTime: Date;
+
+  @Column({ name: 'update_time', type: 'timestamp' })
+  updateTime: Date;
 }
