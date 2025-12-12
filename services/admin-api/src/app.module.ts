@@ -6,6 +6,7 @@ import { AuthMiddleware } from './middleware/AuthMiddleware';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/users.entity';
+import { MessagesModule } from './messages/messages.module';
 
 @common.Module({
   imports: [

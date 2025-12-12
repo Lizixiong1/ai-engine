@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    /* 基础功能 */
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "lib": ["ES2020"],
+    "allowJs": false,
+    "strict": true,
+    "types": ["node"],
+    /* 路径与引用 */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+
+    /* 输出相关 */
+    "outDir": "dist",
+    "declaration": true, // 生成 .d.ts 类型文件
+    "declarationMap": true,
+    "sourceMap": true,
+    "emitDeclarationOnly": false,
+
+    /* 兼容 / 代码质量 */
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true /* 用于 tsup / swc 打包器 */
+  },
+
+  "exclude": ["node_modules", "dist"]
+}

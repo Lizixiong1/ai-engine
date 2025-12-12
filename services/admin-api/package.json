@@ -25,6 +25,7 @@
     "db:init": "ts-node -r tsconfig-paths/register scripts/init_database.ts"
   },
   "dependencies": {
+    "@ai-engine/node-orm": "workspace:*",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/jwt": "^11.0.2",

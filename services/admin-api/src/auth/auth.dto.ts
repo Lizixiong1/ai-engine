@@ -12,5 +12,5 @@ export class RegisterDto {
 }
 export interface LoginParams {
   username: string;
-   password: string;
+  password: string;
 }
