@@ -10,7 +10,10 @@ import { jwtConstants } from 'src/common/constant';
     UsersModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: 86400 }, // 设置 token 的有效期
+      // signOptions: { expiresIn: 86400 }, // 设置 token 的有效期
+      signOptions: {
+        expiresIn: '15m',
+      },
     }),
   ],
   providers: [AuthService],

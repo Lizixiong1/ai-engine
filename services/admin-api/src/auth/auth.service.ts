@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   BadRequestException,
+  OnModuleInit,
 } from '@nestjs/common';
 import { LoginParams, RegisterDto } from './auth.dto';
 import { UserService } from 'src/users/users.service';
@@ -18,7 +19,7 @@ type JwtPayload = {
   exp?: number;
 };
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
@@ -33,8 +34,23 @@ export class AuthService {
     }
   }
 
+  async onModuleInit() {
+    const username = process.env.INIT_ADMIN_USERNAME;
+    const password = process.env.INIT_ADMIN_PASSWORD;
+
+    if (!username || !password) {
+      return;
+    }
+
+    const exists = await this.userService.findByUsername(username);
+
+    if (exists) return;
+
+    await this.createUser({ username, password });
+  }
+
   async register(dto: RegisterDto) {
-    const { username, password } = dto;
+    const { username } = dto;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const existed = (await this.userService.findByUsername(
       username,
@@ -42,16 +58,7 @@ export class AuthService {
     if (existed) {
       throw new BadRequestException('用户名已存在');
     }
-    const saltRounds = 10;
-    const hash: string = await bcrypt.hash(password, saltRounds);
-
-    const user = await this.userService.create({
-      username,
-      password: hash,
-      createTime: dayjs().toDate(),
-      updateTime: dayjs().toDate(),
-    });
-
+    const user = await this.createUser(dto);
     const { password: passwordToOmit, ...result } = user;
     void passwordToOmit;
     const payload: JwtPayload = { sub: user.id, username: user.username };
@@ -61,9 +68,23 @@ export class AuthService {
       }),
       user: result,
     };
-    return result;
   }
 
+  async createUser(dto: RegisterDto) {
+    const { username, password } = dto;
+    const saltRounds = 10;
+    const hash: string = await bcrypt.hash(password, saltRounds);
+
+    const currentTime = dayjs().toDate();
+
+    const user = await this.userService.create({
+      username,
+      password: hash,
+      createTime: currentTime,
+      updateTime: currentTime,
+    });
+    return user;
+  }
   async login(
     params: LoginParams,
   ): Promise<{ access_token: string; user: Omit<User, 'password'> }> {
@@ -90,5 +111,17 @@ export class AuthService {
       }),
       user: safeUser,
     };
+  }
+
+  generateAccessToken(payload: JwtPayload) {
+    return this.jwtService.sign(payload, {
+      secret: jwtConstants.secret,
+    });
+  }
+
+  generateRefreshToken(sub: JwtPayload['sub']) {
+    return this.jwtService.sign({
+      sub,
+    });
   }
 }

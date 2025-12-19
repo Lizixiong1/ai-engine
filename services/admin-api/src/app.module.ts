@@ -7,9 +7,11 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/users.entity';
 import { MessagesModule } from './messages/messages.module';
+import { RedisModule } from './redis/redis.module';
 
 @common.Module({
   imports: [
+    RedisModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
