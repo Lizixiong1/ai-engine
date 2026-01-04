@@ -4,11 +4,19 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 
-const routes: RouteRecordRaw[] = [];
+const routes: RouteRecordRaw[] = [
+  {
+    path: "/home",
+    redirect(to, from) {
+      return "/login";
+    },
+    meta: {},
+  },
+];
 
 const router = createRouter({
   history: createMemoryHistory(),
   routes,
 });
 
-export default router
+export default router;
