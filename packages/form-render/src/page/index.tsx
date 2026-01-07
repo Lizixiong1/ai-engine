@@ -1,27 +1,42 @@
 import React from "react";
-import { create } from "@ai-engine/zustand";
-const useStore = create<{ count: number; increment: () => void }>(
-  (set, get) => ({
-    count: 0,
-    increment: () => set((state) => ({ count: state.count +1 })),
-  })
-);
+import FormStore from "../FormStore";
+
 const App = () => {
-  const { count, increment } = useStore();
+  const a = new FormStore({
+    fields: [
+      {
+        fieldName: "a",
+        control: {
+          type: "input",
+        },
+        children: [
+          {
+            fieldName: "a.a",
+            control: {
+              type: "input",
+            },
+            children: [
+              {
+                fieldName: "a.a.a",
+                control: {
+                  type: "input",
+                },
+              },
+            ],
+          },
+          {
+            fieldName: "a.b",
+            control: {
+              type: "input",
+            },
+          },
+        ],
+      },
+    ],
+  });
+  console.log(a);
 
-  console.log(count);
-
-  return (
-    <div>
-      <B />
-      <button onClick={() => increment()}>增加</button>
-    </div>
-  );
+  return <div>App</div>;
 };
 
-const B = () => {
-  const { count } = useStore();
-  console.log(count);
-  return <div>{count}</div>;
-};
 export default App;

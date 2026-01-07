@@ -1,29 +1,47 @@
 import { useEffect, useRef, useState } from "react";
 import { shallow } from "./util";
-type CreateState<T = any> = (
-  set: (newState: T | ((v: T) => T)) => void,
-  get: () => T
-) => any;
-const createStoreImpl = <State>(createState: any) => {
-  let state: State;
-  const listeners = new Set<(state: any, preState: any) => void>();
+export { persist } from "./middleware";
 
-  const setState = (partial: (arg0: any) => any, replace?: boolean) => {
-    const nextState = typeof partial === "function" ? partial(state) : partial;
+export type Listener<T> = (state: T, preState: T) => void;
+export type Set<T> = (newState: T | ((v: T) => T), replace?: boolean) => void;
+export type Get<T> = () => T;
+export type Subscribe<T> = (listener: Listener<T>) => () => void;
+export interface API<T> {
+  setState: Set<T>;
+  getState: Get<T>;
+  subscribe: Subscribe<T>;
+}
+export type CreateState<T, A extends API<T> = API<T>> = (
+  set: Set<T>,
+  get: Get<T>,
+  api: A
+) => T;
+type ExtractAPI<C> = C extends CreateState<any, infer A> ? A : never;
+
+type ExtractState<C> = C extends CreateState<infer T, any> ? T : never;
+
+export const createStore = <C extends CreateState<any, any>>(
+  createState: C
+) => {
+  type T = ExtractState<C>;
+  type A = ExtractAPI<C>;
+  let state: T;
+  const listeners = new Set<Listener<T>>();
+
+  const setState: Set<T> = (partial, replace) => {
+    const nextState =
+      typeof partial === "function" ? (partial as (v: T) => T)(state) : partial;
     if (!Object.is(nextState, state)) {
       // 浅比较
       const previousState = state;
       state = (replace != undefined ? replace : typeof nextState !== "object")
         ? nextState
         : Object.assign({}, state, nextState);
-
-      console.log(listeners);
-
       listeners.forEach((listener) => listener(state, previousState)); // 触发观察者事件，
     }
   };
-  const getState = () => state;
-  const subscribe = (listener: any) => {
+  const getState: Get<T> = () => state;
+  const subscribe: Subscribe<T> = (listener: Listener<T>) => {
     // 将事件推入listeners
     // 对外提供取消监听方法
     listeners.add(listener);
@@ -31,51 +49,33 @@ const createStoreImpl = <State>(createState: any) => {
       listeners.delete(listener);
     };
   };
-  const destroy = () => {
-    // 清除所有event
-    listeners.clear();
-  };
-  const api = { setState, getState, subscribe, destroy }; // api对象提供给外部
+
+  const api = { setState, getState, subscribe } as A; // api对象提供给外部
   state = createState(setState, getState, api);
   return api;
 };
 
-const create = <T>(createState: CreateState<T>) => {
-  const api = createStoreImpl(createState);
+export const create = <T>(createState: CreateState<T>) => {
+  const api = createStore(createState);
 
   function useStore(selector = api.getState) {
     const [, forceRender] = useState(0);
 
     const latestSelector = useRef(selector);
-    const latestSelectedState = useRef<any>();
+    const latestSelectedState = useRef<T>();
 
     // 渲染阶段计算当前值
     let selectedState;
 
     const newSelection = selector();
 
-    if (typeof newSelection === "function") {
-      // 🔥 关键优化：对函数类型使用稳定化
-      if (
-        latestSelectedState.current &&
-        typeof latestSelectedState.current === "function" &&
-        newSelection.toString() === latestSelectedState.current.toString()
-      ) {
-        // 函数体相同，保持原引用
-        selectedState = latestSelectedState.current;
-      } else {
-        selectedState = newSelection;
-      }
+    if (
+      latestSelectedState.current &&
+      shallow(latestSelectedState.current, newSelection)
+    ) {
+      selectedState = latestSelectedState.current;
     } else {
-      // 非函数类型使用浅比较
-      if (
-        latestSelectedState.current &&
-        shallow(latestSelectedState.current, newSelection)
-      ) {
-        selectedState = latestSelectedState.current;
-      } else {
-        selectedState = newSelection;
-      }
+      selectedState = newSelection;
     }
 
     useEffect(() => {
@@ -88,7 +88,7 @@ const create = <T>(createState: CreateState<T>) => {
         const newSelection = latestSelector.current();
 
         // 对函数类型特殊比较
-        debugger
+        debugger;
         let hasChanged;
         if (typeof newSelection === "function") {
           hasChanged = latestSelectedState.current !== newSelection;
@@ -111,4 +111,3 @@ const create = <T>(createState: CreateState<T>) => {
 
   return useStore;
 };
-export { create };
