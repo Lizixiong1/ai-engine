@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import useUpdate from "../../hooks/useUpdate";
 import { FieldProps } from "@/Fields";
 
-const Input = (props: FieldProps) => {
+const Time = (props: FieldProps) => {
   const forceUpdate = useUpdate();
   useEffect(() => {
     props?.fieldCtx?.register(forceUpdate);
@@ -10,10 +10,11 @@ const Input = (props: FieldProps) => {
   
   return (
     <input
+      type="time"
       value={props?.fieldCtx?.value ?? ""}
       onChange={(e) => props?.fieldCtx?.onChange(e.target.value)}
-    ></input>
+    />
   );
 };
 
-export default Input;
+export default Time;

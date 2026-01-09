@@ -1,3 +1,6 @@
+import { FieldProps } from "@/Fields";
+import { type ComponentType } from "react";
+
 export type ControlType =
   | "input"
   | "textarea"
@@ -10,17 +13,17 @@ export type ControlType =
   | "number"
   | "slider"
   | "upload"
-  | "custom"
-  | string;
-export interface Field {
+  | "custom";
+
+export interface Field<T extends string | number | symbol = never> {
   fieldName: string;
-  control: Control;
+  control: Control<T>;
   description?: string;
   extra?: string;
   dependencies?: string[];
   // 模型定义
   model?: Model;
-  children?: Field[];
+  children?: Field<T>[];
   // onChange?: (value: any, context: Context) => void | Promise<void>;
 }
 export interface Model {
@@ -32,8 +35,8 @@ export interface Model {
 export interface Context {
   [key: string]: any;
 }
-export interface Control {
-  type: ControlType;
+export interface Control<T extends string | number | symbol = never> {
+  type: ControlType | T;
   label?: string;
   placeholder?: string;
   options?:
@@ -42,12 +45,7 @@ export interface Control {
   props?: { [key: string]: any };
   rules?: Rule[];
   binding?: DataBinding;
-  children?: Schema[]; // For nested forms
-  customRender?: (
-    value: any,
-    onChange: (value: any) => void,
-    context?: Context
-  ) => JSX.Element;
+  customRender?: (props: FieldProps & { context: Context }) => JSX.Element;
   hidden?: boolean | ((context: Context) => boolean);
 }
 export interface Rule {
@@ -77,14 +75,19 @@ export interface DataBinding {
     operator?: "==" | "!=" | ">" | "<" | ">=" | "<=" | "includes" | "excludes";
   };
 }
-
-export interface Schema {
+// 1 基础元件 无子元素   2 容器元件 允许子元素
+export type RenderType = 1 | 2;
+export interface ComponentsMap<T = any> {
+  component: ComponentType<T>;
+  renderType?: 1 | 2;
+}
+export interface Schema<T extends string | number | symbol = never> {
   // 表单属性
   title?: string;
   description?: string;
 
   // 字段
-  fields?: Field[];
+  fields?: Field<T>[];
 
   // 行为上下文
   context?: Context;
@@ -92,13 +95,11 @@ export interface Schema {
   // 作用域 - 允许将字段分组到命名空间下
   scope?: string;
   scopes?: {
-    [scopeName: string]: Schema; // 不同作用域下的嵌套模式
+    [scopeName: string]: Schema<T>; // 不同作用域下的嵌套模式
   };
 
   // 可用于此方案的自定义控件
-  customControls?: {
-    [controlName: string]: Control;
-  };
+  customControls: T extends never ? undefined : Record<T, ComponentsMap>;
 
   // 布局
   layout?: {

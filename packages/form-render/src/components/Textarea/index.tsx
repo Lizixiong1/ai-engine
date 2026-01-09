@@ -2,18 +2,19 @@ import { useEffect } from "react";
 import useUpdate from "../../hooks/useUpdate";
 import { FieldProps } from "@/Fields";
 
-const Input = (props: FieldProps) => {
+const Textarea = (props: FieldProps) => {
   const forceUpdate = useUpdate();
   useEffect(() => {
     props?.fieldCtx?.register(forceUpdate);
   }, []);
   
   return (
-    <input
+    <textarea
       value={props?.fieldCtx?.value ?? ""}
       onChange={(e) => props?.fieldCtx?.onChange(e.target.value)}
-    ></input>
+      placeholder={props?.control?.placeholder}
+    />
   );
 };
 
-export default Input;
+export default Textarea;
