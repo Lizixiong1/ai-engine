@@ -1,5 +1,13 @@
+import {
+  FreeLayoutItemProps,
+  FreeLayoutProps,
+} from "@/components/Layouts/FreeLayouts";
+import {
+  GridLayoutsItemProps,
+  GridLayoutsProps,
+} from "@/components/Layouts/GridLayouts";
 import { FieldProps } from "@/Fields";
-import { type ComponentType } from "react";
+import { ComponentType } from "react";
 
 export type ControlType =
   | "input"
@@ -24,7 +32,8 @@ export interface Field<T extends string | number | symbol = never> {
   // 模型定义
   model?: Model;
   children?: Field<T>[];
-  // onChange?: (value: any, context: Context) => void | Promise<void>;
+
+  layout?: FreeLayoutItemProps | GridLayoutsItemProps;
 }
 export interface Model {
   value?: any;
@@ -58,9 +67,7 @@ export interface Rule {
   condition?: (context: Context) => boolean;
 }
 export interface DataBinding {
-  // Static binding
   static?: any[];
-  // Async binding with API configuration
   async?: {
     url: string;
     method?: "GET" | "POST" | "PUT" | "DELETE";
@@ -68,7 +75,7 @@ export interface DataBinding {
     transform?: (response: any) => any;
     dependencies?: string[];
   };
-  // Conditional display based on other fields
+
   visible?: {
     field: string;
     value: any;
@@ -102,11 +109,7 @@ export interface Schema<T extends string | number | symbol = never> {
   customControls: T extends never ? undefined : Record<T, ComponentsMap>;
 
   // 布局
-  layout?: {
-    type?: "horizontal" | "vertical" | "inline";
-    labelCol?: number;
-    wrapperCol?: number;
-  };
+  layout?: FreeLayoutProps | GridLayoutsProps;
 
   // 提交
   submit?: {

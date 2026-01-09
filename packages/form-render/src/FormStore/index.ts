@@ -1,26 +1,48 @@
-import { componentsMap } from "@/components";
 import Fields, { FieldItem } from "../Fields";
 import { ComponentsMap, Context, Schema } from "../typings";
-import { createElement } from "react";
+import { createElement, ReactNode } from "react";
+import {
+  getDefaultGridLayout,
+  GridLayoutsProps,
+} from "@/components/Layouts/GridLayouts";
+import { FreeLayoutProps } from "@/components/Layouts/FreeLayouts";
+import { layoutsMapping } from "@/components/Layouts/index";
+import { componentsMap } from "@/components/FieldControls";
+import LiftCycle from "@/LiftCycle";
 
 export const getComponentConfig = (
   item: FieldItem,
   customControls: Record<string, ComponentsMap<any>>
 ) => {
-  return componentsMap.get(item.field.control.type)
+  const config = componentsMap.get(item.field.control.type)
     ? componentsMap.get(item.field.control.type)
     : customControls
     ? (Reflect.get(customControls, item.field.control.type) as ComponentsMap)
     : undefined;
+  if (config && !config.renderType) {
+    config.renderType = 1;
+  }
+  return config;
 };
 class FormStore<T extends string | number | symbol = never> {
   private schema: Schema<T>;
   private context: Context;
+  private layout!: GridLayoutsProps | FreeLayoutProps;
+  private lifeCycle: LiftCycle;
   fields: Fields;
   constructor(schema: Schema<T>, initialContext?: Context) {
     this.schema = schema;
     this.context = initialContext || schema.context || {};
+    this.lifeCycle = new LiftCycle();
+    this.initLayout();
     this.fields = new Fields(schema as Schema);
+  }
+  initLayout() {
+    let layout = this.schema.layout;
+    if (!layout) {
+      layout = getDefaultGridLayout();
+    }
+    this.layout = layout;
   }
 
   getFormData() {
@@ -37,30 +59,51 @@ class FormStore<T extends string | number | symbol = never> {
 
   render() {
     const fieldItems = this.fields.fieldItems;
+    return this.renderLayout(this.renderNode(fieldItems));
+  }
+
+  renderLayout(children?: ReactNode) {
+    const Layout = layoutsMapping[this.layout.type];
+    return createElement(
+      Layout,
+      { ...this.layout, key: Math.random() },
+      children
+    );
+  }
+
+  renderLayoutItem(props?: Record<string, any>, children?: ReactNode) {
+    const Layout = layoutsMapping[this.layout.type];
+    return createElement(
+      Layout.Item,
+      { ...this.layout.itemProps, ...props },
+      children
+    );
+  }
+
+  renderNode(fieldItems: FieldItem[]): ReactNode {
     const customControls = this.schema.customControls;
-    const global = {
+    const extraProps = {
       context: this.context,
     };
-    function renderNode(fieldItems: FieldItem[]): React.ReactNode {
-      return fieldItems.map((item) => {
-        let Com = getComponentConfig(item, customControls);
-        if (!Com) {
-          console.warn("该type的组件 未注册 请注册该组件后使用");
-          return null;
-        }
-        Com.renderType = Com.renderType || 1;
-        return createElement(
+    return fieldItems.map((item) => {
+      let Com = getComponentConfig(item, customControls);
+      if (!Com) {
+        console.warn("该type的组件 未注册 请注册该组件后使用");
+        return null;
+      }
+      return this.renderLayoutItem(
+        { ...item.field.layout, key: item.path.key },
+        createElement(
           Com.component,
-          Object.assign({}, item.props, global),
+          Object.assign({}, item.props, extraProps),
           Com.renderType === 1
             ? null
             : item.children
-            ? renderNode(item.children)
+            ? this.renderNode(item.children)
             : null
-        );
-      });
-    }
-    return renderNode(fieldItems);
+        )
+      );
+    });
   }
 }
 export default FormStore;

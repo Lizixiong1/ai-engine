@@ -1,12 +1,10 @@
 import { useEffect } from "react";
-import useUpdate from "../../hooks/useUpdate";
 import { FieldProps } from "@/Fields";
+import useUpdate from "@/hooks/useUpdate";
+import useFieldBinding from "../useFieldBinding";
 
 const Custom = (props: FieldProps) => {
-  const forceUpdate = useUpdate();
-  useEffect(() => {
-    props?.fieldCtx?.register(forceUpdate);
-  }, []);
+  useFieldBinding(props);
 
   // Custom 组件可以通过 customRender 属性来自定义渲染
   const customRender = props?.control?.customRender;
