@@ -1,4 +1,4 @@
-const HYPHEN = "$hyphen$";
+const HYPHEN = ".";
 class Path {
   path: string[];
   key: string;

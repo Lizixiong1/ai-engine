@@ -88,6 +88,19 @@ export interface ComponentsMap<T = any> {
   component: ComponentType<T>;
   renderType?: 1 | 2;
 }
+
+export interface FieldRef {
+  setValue: (namePath: string[], value: any) => void;
+  setValues: (values: any) => void;
+  getValue: (namePath: string[]) => any;
+  getValues: () => any;
+  resetValues: () => void;
+}
+export interface LiftCycleType {
+  onInit?: (content: any) => void; // 初始化
+  onMounted?: (fieldRef: FieldRef) => void; // 初始化挂载
+  onUnmounted?: () => void; // 卸载前
+}
 export interface Schema<T extends string | number | symbol = never> {
   // 表单属性
   title?: string;
@@ -119,6 +132,9 @@ export interface Schema<T extends string | number | symbol = never> {
     onSuccess?: (response: any) => void;
     onError?: (error: any) => void;
   };
+
+  // 生命周期
+  lifeCycles?: LiftCycleType;
   // 事件
   events?: {
     onInit?: (context: Context) => void | Promise<void>;

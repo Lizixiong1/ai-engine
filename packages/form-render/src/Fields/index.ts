@@ -1,24 +1,33 @@
 import Path from "../Path";
-import { Schema, Model, Field } from "../typings";
+import { Schema, Model, Field, FieldRef } from "../typings";
 import { _set, findLeafNodes } from "@/shared/util";
 import { FORCE_UPDATE_KEY } from "@/shared/common";
 import { ReactNode } from "react";
+import Validator, { ValidationResult } from "./validator";
+import DataRelation from "./dataRelation";
 
 export interface FieldModel extends Model {
   isMounted: boolean;
+  isVisible: boolean;
 }
 
-export interface FieldProps extends Record<string, any> {
+export interface BaseFieldProps extends Record<string, any> {
+  className?: string;
+}
+export interface FieldProps extends BaseFieldProps {
   key: React.Key;
   fieldCtx: FieldCtx;
   children?: ReactNode;
 }
 
+export type Validate = (newValue: any) => Promise<ValidationResult>;
 export interface FieldCtx {
   methods: Record<string, Function>;
   register: (forceUpdate: Function) => void;
   value: any;
   onChange: (newValue: any) => void;
+  validate: Validate;
+  visible: boolean;
 }
 
 export interface FieldItem {
@@ -30,13 +39,18 @@ export interface FieldItem {
 }
 
 class Fields {
-  private models: Map<Path, FieldModel>;
-  private items: Map<Path, FieldItem>;
+  private fieldRef: FieldRef | undefined;
+  private validator: Validator;
+  private dataRelation: DataRelation;
+  models: Map<Path, FieldModel>;
+  items: Map<Path, FieldItem>;
   fieldItems: FieldItem[] = [];
 
   constructor(schema: Schema) {
     this.models = new Map();
     this.items = new Map();
+    this.validator = new Validator();
+    this.dataRelation = new DataRelation(this);
     this.initialFields(schema.fields);
   }
 
@@ -55,7 +69,8 @@ class Fields {
     });
     return values;
   }
-  getValue(pathName: string[]) {
+  getValue(pathName: string[] | string) {
+    pathName = Array.isArray(pathName) ? pathName : Path.revert(pathName);
     return this.models.get(Path.getPath(pathName))?.value;
   }
 
@@ -87,6 +102,9 @@ class Fields {
       if (!paths.length) {
         this.fieldItems.push(fieldItem);
       }
+
+      this.dataRelation.registerFieldDependencies(pathName, field);
+
       if (field.children) {
         this.build(field.children, pathName);
       }
@@ -101,6 +119,8 @@ class Fields {
 
   getFieldCtx(path: Path) {
     const models = this.models;
+    const items = this.items;
+    const _validator = this.validator;
     const ctx: FieldCtx = {
       methods: {},
       register(forceUpdate) {
@@ -110,6 +130,16 @@ class Fields {
         }
         this.methods[FORCE_UPDATE_KEY] = forceUpdate;
       },
+      async validate(newValue: any) {
+        const item = items.get(path);
+        return await _validator.validate(newValue, item?.field.control.rules);
+      },
+
+      get visible() {
+        const model = models.get(path);
+        return model ? model.isVisible : true;
+      },
+
       get value() {
         const model = models.get(path);
         return typeof model?.value === "undefined"
@@ -131,6 +161,10 @@ class Fields {
     const model: FieldModel = {
       ...field.model,
       isMounted: false,
+      isVisible: this.dataRelation.initialSetVisible(
+        path,
+        field.control?.binding?.visible
+      ),
       value: field.model?.value || field.model?.defaultValue,
     };
 
@@ -144,9 +178,9 @@ class Fields {
           return Reflect.set(target, p, newValue);
         }
         const result = Reflect.set(target, p, newValue);
-        if (p === "value") {
-          // 触发对应字段规则和联动条件
-
+        if (p === "value" || p === "isVisible") {
+          // 字段联动绑定
+          _this.dataRelation.triggerDependencyUpdates(path, newValue);
           // 更新组件
           _this.items.get(path)?.forceUpdate();
         }
@@ -190,6 +224,26 @@ class Fields {
       fieldItem,
       pathName,
     };
+  }
+
+  getFieldRef(): FieldRef {
+    if (!this.fieldRef) {
+      this.fieldRef = {
+        getValue: this.getValue.bind(this),
+        getValues: this.getValues.bind(this),
+        setValue: this.setValue.bind(this),
+        setValues: this.setValues.bind(this),
+        resetValues: this.resetValues.bind(this),
+      };
+    }
+    return this.fieldRef;
+  }
+
+  clear() {
+    this.dataRelation.clearAllDependencies();
+    this.fieldItems = [];
+    this.models.clear();
+    this.items.clear();
   }
 }
 

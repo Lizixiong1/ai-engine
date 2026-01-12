@@ -1,12 +1,26 @@
 import { FieldProps } from "@/Fields";
 import useFieldBinding from "../useFieldBinding";
+import ErrorMessage from "../ErrorMessage";
+import { classnames } from "@/shared/util";
 
 const Input = (props: FieldProps) => {
-  const { value, onChange } = useFieldBinding(props);
+  const { className } = props;
+  const { value, onChange, validationResult, visible } = useFieldBinding(props);
 
-  return (
-    <input value={value} onChange={(e) => onChange(e.target.value)}></input>
-  );
+  return visible ? (
+    <>
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={classnames(
+          "form-item-control-input",
+          validationResult.isValid ? "" : "form-item-control-input-error",
+          className
+        )}
+      />
+      <ErrorMessage errorMessage={validationResult.errorMessage} />
+    </>
+  ) : null;
 };
 
 export default Input;

@@ -8,9 +8,17 @@ const Box = (props: FieldProps) => {
 };
 
 const formStore = new FormStore<"box">({
+  lifeCycles: {
+    onMounted(fieldRef) {
+      console.log(fieldRef.getValues());
+    },
+  },
+  context: {
+    a: 1,
+  },
   layout: {
-    type: "free_layout",
-    // type: "grid_layout",
+    // type: "free_layout",
+    type: "grid_layout",
   },
   customControls: {
     box: {
@@ -19,45 +27,50 @@ const formStore = new FormStore<"box">({
     },
   },
   fields: [
-    // {
-    //   fieldName: "a",
-    //   control: {
-    //     type: "box",
-    //   },
-    //   layout: {
-    //     width: 100,
-    //     height: 100,
-    //     x: 100,
-    //     y: 60,
-    //     style: {
-    //       // background: '#000000',
-    //       overflow: "hidden",
-    //     },
-    //   },
-    //   model: {
-    //     value: 4,
-    //   },
-    //   children: [
-    //     {
-    //       fieldName: "a.a",
-    //       control: {
-    //         type: "box",
-    //       },
-    //       children: [
-    //         {
-    //           fieldName: "a.a.a",
-    //           control: {
-    //             type: "input",
-    //           },
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
+    {
+      fieldName: "a",
+      control: {
+        type: "box",
+        props: {},
+      },
+      model: {
+        value: 4,
+      },
+      children: [
+        {
+          fieldName: "aa",
+          control: {
+            type: "box",
+          },
+          children: [
+            {
+              fieldName: "aaa",
+              control: {
+                type: "input",
+              },
+            },
+            {
+              fieldName: "aab",
+              control: {
+                type: "input",
+              },
+            },
+          ],
+        },
+      ],
+    },
     {
       fieldName: "test",
       control: {
         type: "input",
+        rules: [
+          {
+            required: true,
+          },
+        ],
+        binding: {
+          visible: { field: "a.aa.aaa", operator: "==", value: "我要验牌" },
+        },
       },
       model: {
         defaultValue: 8,
@@ -65,16 +78,10 @@ const formStore = new FormStore<"box">({
       layout: {
         width: 100,
         height: 100,
-        style: {
-          background: '#000000',
-          overflow: 'hidden'
-        }
-      }
-    },
-    {
-      fieldName: "abb",
-      control: {
-        type: "box",
+        // style: {
+        //   background: "#000000",
+        //   overflow: "hidden",
+        // },
       },
     },
   ],
@@ -83,7 +90,8 @@ const App = () => {
   console.log(formStore);
 
   useEffect(() => {
-    // formStore.
+    formStore.onMounted();
+    return () => formStore.onUnmounted();
   }, []);
   return (
     <div style={{ width: "80vw", height: 300 }}>

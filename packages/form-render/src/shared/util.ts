@@ -33,3 +33,15 @@ export function findLeafNodes<T extends object>(
 
   return results;
 }
+
+/**
+ * 合并classname
+ * @param args
+ * @returns {string}
+ */
+export const classnames = (...args: any[]): string =>
+  (
+    args
+      .filter((a) => typeof a === "string" && a)
+      .reduce((pre, cur) => `${pre} ${cur}`, "") as string
+  ).trim();

@@ -9,7 +9,7 @@ import { FreeLayoutProps } from "@/components/Layouts/FreeLayouts";
 import { layoutsMapping } from "@/components/Layouts/index";
 import { componentsMap } from "@/components/FieldControls";
 import LiftCycle from "@/LiftCycle";
-
+import "@/styles/index.css";
 export const getComponentConfig = (
   item: FieldItem,
   customControls: Record<string, ComponentsMap<any>>
@@ -28,12 +28,12 @@ class FormStore<T extends string | number | symbol = never> {
   private schema: Schema<T>;
   private context: Context;
   private layout!: GridLayoutsProps | FreeLayoutProps;
-  private lifeCycle: LiftCycle;
-  fields: Fields;
+  protected lifeCycle: LiftCycle;
+  protected fields: Fields;
   constructor(schema: Schema<T>, initialContext?: Context) {
     this.schema = schema;
     this.context = initialContext || schema.context || {};
-    this.lifeCycle = new LiftCycle();
+    this.lifeCycle = new LiftCycle(this.schema.lifeCycles);
     this.initLayout();
     this.fields = new Fields(schema as Schema);
   }
@@ -57,7 +57,21 @@ class FormStore<T extends string | number | symbol = never> {
     return this.fields.resetValues();
   }
 
+  onInit() {
+    this.lifeCycle.execute("onInit", this.context);
+  }
+
+  onMounted() {
+    this.lifeCycle.execute("onMounted", this.fields.getFieldRef());
+  }
+
+  onUnmounted() {
+    this.fields.clear();
+    this.lifeCycle.execute("onUnmounted");
+  }
+
   render() {
+    this.onInit();
     const fieldItems = this.fields.fieldItems;
     return this.renderLayout(this.renderNode(fieldItems));
   }
@@ -106,4 +120,5 @@ class FormStore<T extends string | number | symbol = never> {
     });
   }
 }
+
 export default FormStore;
