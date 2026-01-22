@@ -1,3 +1,3 @@
-import FormStore from "./FormStore";
+import FormStore from "./core/FormStore";
 
 export { FormStore };

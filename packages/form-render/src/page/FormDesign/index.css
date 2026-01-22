@@ -1,0 +1,213 @@
+
+
+.vscode-dark-theme {
+  background-color: var(--vscode-bg);
+  color: var(--vscode-text);
+}
+
+.vscode-dark-theme .form-designer-container {
+  background-color: var(--vscode-bg);
+  color: var(--vscode-text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.vscode-dark-theme .form-designer-header {
+  background-color: var(--vscode-sidebar-bg);
+  border-bottom: 1px solid var(--vscode-border);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vscode-dark-theme .form-designer-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.vscode-dark-theme .form-designer-toolbar {
+  display: flex;
+  gap: 8px;
+}
+
+.vscode-dark-theme .toolbar-button {
+  background-color: var(--vscode-button-bg);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.vscode-dark-theme .toolbar-button:hover {
+  background-color: var(--vscode-button-hover-bg);
+}
+
+.vscode-dark-theme .form-designer-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.vscode-dark-theme .form-designer-sidebar {
+  background-color: var(--vscode-sidebar-bg);
+  border-right: 1px solid var(--vscode-border);
+  width: 250px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.vscode-dark-theme .sidebar-section {
+  margin-bottom: 20px;
+}
+
+.vscode-dark-theme .sidebar-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: var(--vscode-text-secondary);
+}
+
+.vscode-dark-theme .control-item {
+  background-color: var(--vscode-input-bg);
+  border: 1px solid var(--vscode-input-border);
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 8px;
+  cursor: grab;
+  transition: all 0.2s ease;
+}
+
+.vscode-dark-theme .control-item:hover {
+  background-color: #2a2d2e;
+  border-color: var(--vscode-accent);
+}
+
+.vscode-dark-theme .form-canvas {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #181818;
+  position: relative;
+}
+
+.vscode-dark-theme .canvas-grid {
+  /* background-image: radial-gradient(
+    circle,
+    var(--vscode-text-secondary) 1px,
+    transparent 1px
+  ); */
+  background-size: 20px 20px;
+  min-height: 100%;
+  height: 100%;
+}
+
+.vscode-dark-theme .form-field-placeholder {
+  border: 2px dashed var(--vscode-border);
+  border-radius: 4px;
+  padding: 20px;
+  text-align: center;
+  color: var(--vscode-text-secondary);
+  margin-bottom: 16px;
+}
+
+.vscode-dark-theme .form-field {
+  background-color: var(--vscode-panel-bg);
+  border: 1px solid var(--vscode-border);
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.vscode-dark-theme .form-field.selected {
+  border-color: var(--vscode-accent);
+  box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+}
+
+.vscode-dark-theme .form-field-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+}
+
+.vscode-dark-theme .action-button {
+  background-color: var(--vscode-input-bg);
+  border: 1px solid var(--vscode-input-border);
+  border-radius: 3px;
+  padding: 4px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--vscode-text);
+}
+
+.vscode-dark-theme .action-button:hover {
+  background-color: #2a2d2e;
+}
+
+.vscode-dark-theme .form-designer-properties {
+  background-color: var(--vscode-sidebar-bg);
+  border-left: 1px solid var(--vscode-border);
+  width: 300px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.vscode-dark-theme .property-group {
+  margin-bottom: 20px;
+}
+
+.vscode-dark-theme .property-label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: var(--vscode-text-secondary);
+}
+
+.vscode-dark-theme .property-input {
+  width: 100%;
+  background-color: var(--vscode-input-bg);
+  border: 1px solid var(--vscode-input-border);
+  color: var(--vscode-text);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.vscode-dark-theme .property-input:focus {
+  outline: none;
+  border-color: var(--vscode-accent);
+}
+
+.vscode-dark-theme .form-preview {
+  background-color: var(--vscode-panel-bg);
+  border: 1px solid var(--vscode-border);
+  border-radius: 4px;
+  padding: 20px;
+  margin-top: 16px;
+}
+
+.vscode-dark-theme input,
+.vscode-dark-theme textarea,
+.vscode-dark-theme select {
+  background-color: var(--vscode-input-bg);
+  border: 1px solid var(--vscode-input-border);
+  color: var(--vscode-text);
+}
+
+.vscode-dark-theme input:focus,
+.vscode-dark-theme textarea:focus,
+.vscode-dark-theme select:focus {
+  outline: none;
+  border-color: var(--vscode-accent);
+}

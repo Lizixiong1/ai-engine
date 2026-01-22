@@ -1,4 +1,4 @@
-import { ValidationResult } from "@/Fields/validator";
+import { ValidationResult } from "@/core/Fields/validator";
 import { classnames } from "@/shared/util";
 import { FC } from "react";
 

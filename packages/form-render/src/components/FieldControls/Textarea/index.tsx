@@ -1,4 +1,4 @@
-import { FieldProps } from "@/Fields";
+import { FieldProps } from "@/core/Fields";
 import useFieldBinding from "../useFieldBinding";
 import ErrorMessage from "../ErrorMessage";
 

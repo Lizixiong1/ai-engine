@@ -47,7 +47,6 @@ export interface Context {
 export interface Control<T extends string | number | symbol = never> {
   type: ControlType | T;
   label?: string;
-  placeholder?: string;
   options?:
     | Array<{ label: string; value: any }>
     | ((context: Context) => Array<{ label: string; value: any }>);

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { FieldProps } from "@/Fields";
+import { FieldProps } from "@/core/Fields";
 import useUpdate from "@/hooks/useUpdate";
 import useFieldBinding from "../useFieldBinding";
 
