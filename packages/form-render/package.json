@@ -25,6 +25,7 @@
   "packageManager": "pnpm@10.20.0",
   "dependencies": {
     "@ai-engine/zustand": "workspace:*",
+    "@ai-engine/react-draggable": "workspace:*",
     "lodash-es": "^4.17.22",
     "zustand": "^4.4.0"
   },
