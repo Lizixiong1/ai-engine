@@ -9,10 +9,10 @@ import { FreeLayoutProps } from "@/components/Layouts/FreeLayouts";
 import { layoutsMapping } from "@/components/Layouts/index";
 import { componentsMap } from "@/components/FieldControls";
 import LiftCycle from "../LiftCycle";
-import "@/styles/index.css";
+
 export const getComponentConfig = (
   item: FieldItem,
-  customControls: Record<string, ComponentsMap<any>>,
+  customControls?: Record<string, ComponentsMap<any>>,
 ) => {
   const config = componentsMap.get(item.field.control.type)
     ? componentsMap.get(item.field.control.type)
@@ -25,18 +25,22 @@ export const getComponentConfig = (
   return config;
 };
 class FormStore<T extends string | number | symbol = never> {
-  private schema: Schema<T>;
-  private context: Context;
+  private schema!: Schema<T>;
+  private context!: Context;
   private layout!: GridLayoutsProps | FreeLayoutProps;
-  protected lifeCycle: LiftCycle;
-  protected fields: Fields;
-  constructor(schema: Schema<T>, initialContext?: Context) {
+  protected lifeCycle!: LiftCycle;
+  protected fields!: Fields;
+  constructor() {}
+
+  init(schema: Schema<T>, initialContext?: Context) {
     this.schema = schema;
     this.context = initialContext || schema.context || {};
     this.lifeCycle = new LiftCycle(this.schema.lifeCycles);
     this.initLayout();
     this.fields = new Fields(schema as Schema);
+    return this;
   }
+
   initLayout() {
     let layout = this.schema.layout;
     if (!layout) {

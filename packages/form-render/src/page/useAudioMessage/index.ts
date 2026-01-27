@@ -40,9 +40,11 @@ const addAudioList = (list: ListItem) => {
 
 const removeAudioListById = (id: string) => {
   const preList = getAudioList();
+  const activeId = getActive();
+  if (activeId === id) {
+    removeActive();
+  }
   if (!preList.length) return;
-  console.log(preList, id);
-
   const newList = preList.filter((item) => item.id !== id);
   localStorage.setItem(AUDIO_LIST_KEY, JSON.stringify(newList));
 };
@@ -97,13 +99,16 @@ class AudioMessageManager {
 
   init() {
     this.removeEvents = this.initEvent();
-
     this.initAudioConfig();
-
     addAudioList({
       datetime: Date.now(),
       id: this.sessionId,
     });
+    const activeId = getActive();
+    if (!activeId) {
+      this.enableAudioPlay = true;
+      setActive(this.sessionId);
+    }
     this.intervalTimer = window.setInterval(() => {
       const list = getAudioList();
       if (list.length) {
@@ -111,26 +116,28 @@ class AudioMessageManager {
           return current.datetime < earliest.datetime ? current : earliest;
         });
         if (record && record.id) {
-          console.log(record.id);
-          if (this.sessionId === record.id) {
-            console.log("可以播放");
+          const activeId = getActive();
+          const preEnableAudioPlay = this.enableAudioPlay;
+          if (!activeId) {
+            setActive(record.id);
+          }
+          if (!activeId || activeId === this.sessionId) {
+            if (!preEnableAudioPlay) {
+              console.log("设置当前页变为能播放并播放");
+              this.enableAudioPlay = true;
+              this.playCurrent();
+            } else {
+              console.log("该页面正在播放");
+            }
           } else {
-            console.log("不可以播放");
+            if (preEnableAudioPlay) {
+              this.enableAudioPlay = false;
+              console.log("设置当前页变为不能播放并停止播放");
+              this.resetAudioPlay();
+            }
           }
         }
       }
-      // const preEnableAudioPlay = this.enableAudioPlay;
-      // const active = getActive();
-      // if (active) {
-      //   this.enableAudioPlay = false;
-      // } else {
-      //   setActive(this.sessionId);
-      //   this.enableAudioPlay = true;
-      //   if (!preEnableAudioPlay) {
-      //     this.resetAudioPlay();
-      //   }
-      //   this.playCurrent();
-      // }
     }, intervalTimer);
   }
 
@@ -251,6 +258,10 @@ class AudioMessageManager {
     return nextId;
   }
 
+  setMuted(muted: boolean) {
+    this.audioEl.muted = muted;
+  }
+
   destroy() {
     this.removeEvents();
     if (this.playWaitTimeout) {
@@ -259,7 +270,6 @@ class AudioMessageManager {
     if (this.intervalTimer) {
       window.clearInterval(this.intervalTimer);
     }
-    
     removeAudioListById(this.sessionId);
   }
 }
@@ -284,7 +294,7 @@ export const useAudioMessage = (options: AudioMessageOptions) => {
     const _muted =
       typeof audioConfig?.muted === "undefined" ? false : audioConfig?.muted;
     if (manager.current.audioEl.muted !== _muted) {
-      manager.current.audioEl.muted = _muted;
+      manager.current.setMuted(_muted);
     }
   }, [audioConfig]);
 };

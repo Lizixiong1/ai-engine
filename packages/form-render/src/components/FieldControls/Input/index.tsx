@@ -7,8 +7,6 @@ const Input = (props: FieldProps) => {
   const { value, onChange, validationResult, visible, context, ...otherProps } =
     useFieldBinding(props);
 
-  console.log(otherProps);
-
   return visible ? (
     <>
       <input
@@ -18,7 +16,7 @@ const Input = (props: FieldProps) => {
         className={classnames(
           "form-item-control-input",
           validationResult.isValid ? "" : "form-item-control-input-error",
-          otherProps.className
+          otherProps.className,
         )}
       />
       <ErrorMessage errorMessage={validationResult.errorMessage} />

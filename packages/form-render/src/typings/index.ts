@@ -118,7 +118,7 @@ export interface Schema<T extends string | number | symbol = never> {
   };
 
   // 可用于此方案的自定义控件
-  customControls: T extends never ? undefined : Record<T, ComponentsMap>;
+  customControls?: T extends never ? undefined : Record<T, ComponentsMap>;
 
   // 布局
   layout?: FreeLayoutProps | GridLayoutsProps;

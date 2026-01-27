@@ -8,6 +8,8 @@ import {
 } from "@ai-engine/react-draggable";
 import "./index.css";
 import { useAudioMessage } from "./useAudioMessage";
+import FormRender from "./FormRender";
+import "./index.css";
 const cards = [
   { id: 1, name: "1" },
   { id: 2, name: "2" },
@@ -32,12 +34,13 @@ const cards = [
 //   );
 // };
 const App = () => {
-  useAudioMessage({ messageList: [], audioConfig: {}, playConfig: {} });
+  // useAudioMessage({ messageList: [], audioConfig: {}, playConfig: {} });
   return (
     <DraggableProvider value={HTML5Backend}>
       {/* <Cards /> */}
 
       <div></div>
+      <FormRender />
     </DraggableProvider>
   );
 };
